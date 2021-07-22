@@ -10,7 +10,6 @@ import (
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/dynamic"
-	"k8s.io/client-go/dynamic/dynamicinformer"
 	clientgoscheme "k8s.io/client-go/kubernetes/scheme"
 	"k8s.io/client-go/rest"
 	"k8s.io/klog/v2"
@@ -29,16 +28,15 @@ import (
 var (
 	numberPeeringClusters = 1
 
-	peeringIDTemplate           = "peering-cluster-"
-	localClusterID              = "localClusterID"
-	peeringClustersTestEnvs     = map[string]*envtest.Environment{}
-	peeringClustersManagers     = map[string]ctrl.Manager{}
-	peeringClustersDynClients   = map[string]dynamic.Interface{}
-	peeringClustersDynFactories = map[string]dynamicinformer.DynamicSharedInformerFactory{}
-	configClusterClient         *crdclient.CRDClient
-	k8sManagerLocal             ctrl.Manager
-	testEnvLocal                *envtest.Environment
-	dOperator                   *crdreplicator.Controller
+	peeringIDTemplate         = "peering-cluster-"
+	localClusterID            = "localClusterID"
+	peeringClustersTestEnvs   = map[string]*envtest.Environment{}
+	peeringClustersManagers   = map[string]ctrl.Manager{}
+	peeringClustersDynClients = map[string]dynamic.Interface{}
+	configClusterClient       *crdclient.CRDClient
+	k8sManagerLocal           ctrl.Manager
+	testEnvLocal              *envtest.Environment
+	dOperator                 *crdreplicator.Controller
 )
 
 func TestMain(m *testing.M) {
@@ -134,11 +132,6 @@ func setupEnv() {
 		peeringClustersManagers[peeringClusterID] = manager
 		dynClient := dynamic.NewForConfigOrDie(manager.GetConfig())
 		peeringClustersDynClients[peeringClusterID] = dynClient
-		dynFac := dynamicinformer.NewFilteredDynamicSharedInformerFactory(dynClient, crdreplicator.ResyncPeriod, metav1.NamespaceAll, func(options *metav1.ListOptions) {
-			//we want to watch only the resources that have been created by us on the remote cluster
-			options.LabelSelector = crdreplicator.RemoteLabelSelector + "=" + localClusterID
-		})
-		peeringClustersDynFactories[peeringClusterID] = dynFac
 	}
 	//setup the local testing environment
 	testEnvLocal = &envtest.Environment{
