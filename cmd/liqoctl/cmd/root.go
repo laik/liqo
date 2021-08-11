@@ -16,11 +16,13 @@ limitations under the License.
 package cmd
 
 import (
+	"flag"
 	"fmt"
 	"os"
-	"github.com/spf13/cobra"
 
+	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"k8s.io/klog/v2"
 )
 
 var cfgFile string
@@ -54,6 +56,10 @@ func init() {
 	// will be global for your application.
 
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.liqoctl.yaml)")
+
+	flagset := flag.NewFlagSet("klog", flag.PanicOnError)
+	klog.InitFlags(flagset)
+	rootCmd.PersistentFlags().AddGoFlagSet(flagset)
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.

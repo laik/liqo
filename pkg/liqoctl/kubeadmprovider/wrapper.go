@@ -20,26 +20,24 @@ import (
 )
 
 const (
-	providerPrefix = "kubeadm"
-	podCIDRParameterFilter = `--service-cluster-ip-range=.*`
+	providerPrefix             = "kubeadm"
+	podCIDRParameterFilter     = `--service-cluster-ip-range=.*`
 	ServiceCIDRParameterFilter = `--cluster-cidr=.*`
-	kubeSystemNamespaceName = "kube-system"
+	kubeSystemNamespaceName    = "kube-system"
 )
 
 var kubeControllerManagerLabels = map[string]string{"component": "kube-controller-manager", "tier": "control-plane"}
 
-
 type kubeadmProvider struct {
 	config      *rest.Config
-	PodCIDR       string
+	PodCIDR     string
 	ServiceCIDR string
-	k8sClient  kubernetes.Interface
-	helmClient helm.Client
+	k8sClient   kubernetes.Interface
+	helmClient  helm.Client
 }
 
 func NewProviderCommandConstructor() *kubeadmProvider {
-	return &kubeadmProvider{
-	}
+	return &kubeadmProvider{}
 }
 
 func (k *kubeadmProvider) ValidateParameters(flags *flag.FlagSet) error {
@@ -71,41 +69,39 @@ func (k *kubeadmProvider) ValidateParameters(flags *flag.FlagSet) error {
 	return nil
 }
 
-func (k *kubeadmProvider) GenerateCommand(ctx context.Context) (string,error) {
+func (k *kubeadmProvider) GenerateCommand(ctx context.Context) (string, error) {
 	kubeControllerSpec, err := k.k8sClient.CoreV1().Pods(kubeSystemNamespaceName).List(ctx, metav1.ListOptions{
-		LabelSelector:  labels.Set(kubeControllerManagerLabels).AsSelector().String()      ,
+		LabelSelector: labels.Set(kubeControllerManagerLabels).AsSelector().String(),
 	})
 	if err != nil {
-		return "",err
+		return "", err
 	}
 	if len(kubeControllerSpec.Items) < 1 {
-		return "",fmt.Errorf("kube-controller-manager not found")
+		return "", fmt.Errorf("kube-controller-manager not found")
 	}
 	if len(kubeControllerSpec.Items[0].Spec.Containers) != 1 {
-		return "",fmt.Errorf("unexpected amount of containers in kube-controller-manager")
+		return "", fmt.Errorf("unexpected amount of containers in kube-controller-manager")
 	}
 	command := kubeControllerSpec.Items[0].Spec.Containers[0].Command
-	k.PodCIDR,err = extractValueFromArgumentList(ServiceCIDRParameterFilter,command)
+	k.PodCIDR, err = extractValueFromArgumentList(ServiceCIDRParameterFilter, command)
 	if err != nil {
-		return "",err
+		return "", err
 	}
-	k.ServiceCIDR,err = extractValueFromArgumentList(ServiceCIDRParameterFilter,command)
+	k.ServiceCIDR, err = extractValueFromArgumentList(ServiceCIDRParameterFilter, command)
 	if err != nil {
-		return "",err
+		return "", err
 	}
-	return "",nil
+	return "", nil
 }
 
-func GenerateFlags([]flag.FlagSet) {}
+func GenerateFlags(*flag.FlagSet) {}
 
-
-func extractValueFromArgumentList(argumentMatch string,argumentList []string) (string,error) {
+func extractValueFromArgumentList(argumentMatch string, argumentList []string) (string, error) {
 	for index := range argumentList {
 		matched, _ := regexp.Match(argumentMatch, []byte(argumentList[index]))
 		if matched {
-			return strings.Split(argumentList[index], "=")[1],nil
+			return strings.Split(argumentList[index], "=")[1], nil
 		}
 	}
-	return "",fmt.Errorf("argument not found")
+	return "", fmt.Errorf("argument not found")
 }
-

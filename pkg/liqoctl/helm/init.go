@@ -6,7 +6,7 @@ import (
 	"k8s.io/client-go/rest"
 )
 
-func initLiqoRepo(helmClient helm.Client){
+func initLiqoRepo(helmClient helm.Client) {
 	// Define a public chart repository
 	chartRepo := repo.Entry{
 		Name: "stable",
@@ -18,7 +18,7 @@ func initLiqoRepo(helmClient helm.Client){
 	}
 }
 
-func InitializeClient(config *rest.Config) (helm.Client,error) {
+func InitializeClient(config *rest.Config) (helm.Client, error) {
 	opt := &helm.RestConfClientOptions{
 		Options: &helm.Options{
 			RepositoryCache:  "/tmp/.helmcache",

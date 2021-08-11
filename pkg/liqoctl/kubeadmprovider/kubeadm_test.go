@@ -9,16 +9,16 @@ import (
 
 var p = &corev1.Pod{
 	ObjectMeta: metav1.ObjectMeta{
-		Name: "kube-controller-manager-test",
+		Name:      "kube-controller-manager-test",
 		Namespace: "kube-system",
 		Labels: map[string]string{
-			"component" : "kube-controller-manager",
+			"component": "kube-controller-manager",
 		},
 	},
 	Spec: corev1.PodSpec{
 		Containers: []corev1.Container{
 			{
-				Name: "kube-controller-manager",
+				Name:  "kube-controller-manager",
 				Image: "k8s.gcr.io/kube-controller-manager:v1.20.1",
 				Command: []string{
 					"kube-controller-manager",
@@ -56,7 +56,7 @@ var _ = Describe("Extract elements from APIServer", func() {
 
 	It("Retrieve parameters from kube-controller-manager pod", func() {
 
-		_,err = clientset.CoreV1().Pods(ns.Name).Create(ctx,p,metav1.CreateOptions{})
+		_, err = clientset.CoreV1().Pods(ns.Name).Create(ctx, p, metav1.CreateOptions{})
 		Expect(err).ToNot(HaveOccurred())
 
 		kubeadmParser := NewProviderCommandConstructor()

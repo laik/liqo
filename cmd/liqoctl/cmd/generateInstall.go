@@ -17,6 +17,7 @@ package cmd
 
 import (
 	"github.com/spf13/cobra"
+	"k8s.io/klog/v2"
 
 	"github.com/liqotech/liqo/pkg/liqoctl"
 )
@@ -44,6 +45,13 @@ func init() {
 	generateInstallCmd.Flags().StringP("cluster-name", "c", "", "The name of target-cluster to retrieve it from the provider")
 	generateInstallCmd.Flags().StringP("output", "o", "values", "the output format. It can be: 'values','command' ")
 
+	for _, p := range providers {
+		initFunc, ok := providerInitFunc[p]
+		if !ok {
+			klog.Fatalf("unknown provider: %v", p)
+		}
+		initFunc(generateInstallCmd.Flags())
+	}
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:

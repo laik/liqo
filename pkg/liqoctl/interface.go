@@ -8,5 +8,5 @@ import (
 
 type InstallCommandGenerator interface {
 	ValidateParameters(*flag.FlagSet) error
-	GenerateCommand(ctx context.Context) (string,error)
+	GenerateCommand(ctx context.Context) (string, error)
 }

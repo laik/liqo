@@ -47,8 +47,8 @@ const (
 )
 
 var (
-	flags               *flag.FlagSet
-	buffer              *bytes.Buffer
+	flags  *flag.FlagSet
+	buffer *bytes.Buffer
 )
 
 func TestAPIs(t *testing.T) {
@@ -91,5 +91,3 @@ var _ = AfterSuite(func() {
 	err := testEnv.Stop()
 	Expect(err).ToNot(HaveOccurred())
 })
-
-

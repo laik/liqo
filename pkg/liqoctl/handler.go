@@ -6,6 +6,7 @@ import (
 
 	"github.com/spf13/cobra"
 
+	"github.com/liqotech/liqo/pkg/liqoctl/eksprovider"
 	"github.com/liqotech/liqo/pkg/liqoctl/kubeadmprovider"
 )
 
@@ -22,22 +23,25 @@ func HandleGenerateInstall(cmd *cobra.Command, args []string) {
 	}
 
 	err = provider.ValidateParameters(cmd.Flags())
-	if err != nil{
-		fmt.Printf("Unable to initialize configuration: %v",err)
+	if err != nil {
+		fmt.Printf("Unable to initialize configuration: %v", err)
 		return
 	}
 	_, err = provider.GenerateCommand(ctx)
-	if err != nil{
-		fmt.Printf("Unable to initialize configuration: %v",err)
+	if err != nil {
+		fmt.Printf("Unable to initialize configuration: %v", err)
 		return
 	}
 
 }
 
 func getProviderInstance(providerType string) InstallCommandGenerator {
-	if providerType == "kubeadm" {
+	switch providerType {
+	case "kubeadm":
 		return kubeadmprovider.NewProviderCommandConstructor()
+	case "eks":
+		return eksprovider.NewProviderCommandConstructor()
+	default:
+		return nil
 	}
-	return nil
 }
-
