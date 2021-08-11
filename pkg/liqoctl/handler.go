@@ -7,6 +7,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/liqotech/liqo/pkg/liqoctl/eksprovider"
+	"github.com/liqotech/liqo/pkg/liqoctl/gkeprovider"
 	"github.com/liqotech/liqo/pkg/liqoctl/kubeadmprovider"
 )
 
@@ -41,6 +42,8 @@ func getProviderInstance(providerType string) InstallCommandGenerator {
 		return kubeadmprovider.NewProviderCommandConstructor()
 	case "eks":
 		return eksprovider.NewProviderCommandConstructor()
+	case "gke":
+		return gkeprovider.NewProviderCommandConstructor()
 	default:
 		return nil
 	}

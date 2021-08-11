@@ -7,37 +7,44 @@ require (
 	github.com/clastix/capsule v0.1.0-rc2
 	github.com/containernetworking/plugins v0.8.6
 	github.com/coreos/go-iptables v0.4.5
-	github.com/google/go-cmp v0.5.5
+	github.com/google/go-cmp v0.5.6
 	github.com/google/gofuzz v1.2.0 // indirect
 	github.com/google/uuid v1.2.0
 	github.com/grandcat/zeroconf v1.0.0
 	github.com/gruntwork-io/gruntwork-cli v0.7.0
 	github.com/gruntwork-io/terratest v0.35.6
 	github.com/jinzhu/copier v0.0.0-20201025035756-632e723a6687
+	github.com/json-iterator/go v1.1.11 // indirect
 	github.com/julienschmidt/httprouter v1.3.0
+	github.com/magiconair/properties v1.8.5 // indirect
 	github.com/metal-stack/go-ipam v1.8.4-0.20210322080203-5a9da5064b27
 	github.com/miekg/dns v1.1.35
+	github.com/mitchellh/mapstructure v1.4.1 // indirect
 	github.com/mittwald/go-helm-client v0.8.0
 	github.com/modern-go/reflect2 v1.0.1
 	github.com/onsi/ginkgo v1.16.4
 	github.com/onsi/gomega v1.13.0
+	github.com/pelletier/go-toml v1.9.3 // indirect
 	github.com/pkg/errors v0.9.1
 	github.com/sirupsen/logrus v1.8.1
+	github.com/spf13/afero v1.6.0 // indirect
 	github.com/spf13/cast v1.4.0 // indirect
-	github.com/spf13/cobra v1.2.1
+	github.com/spf13/cobra v1.1.3
 	github.com/spf13/pflag v1.0.5
-	github.com/spf13/viper v1.8.1
+	github.com/spf13/viper v1.7.1
 	github.com/stretchr/testify v1.7.0
 	github.com/virtual-kubelet/virtual-kubelet v1.5.1
 	github.com/vishvananda/netlink v1.1.0
 	github.com/vishvananda/netns v0.0.0-20200728191858-db3c7e526aae
 	go.opencensus.io v0.23.0
-	golang.org/x/oauth2 v0.0.0-20210628180205-a41e5a781914 // indirect
+	go.uber.org/zap v1.17.0 // indirect
 	golang.org/x/sys v0.0.0-20210630005230-0f9fa26af87c
 	golang.zx2c4.com/wireguard/wgctrl v0.0.0-20200609130330-bd2cb7843e1b
 	gomodules.xyz/jsonpatch/v2 v2.1.0
+	google.golang.org/api v0.50.0
 	google.golang.org/grpc v1.38.0
 	google.golang.org/protobuf v1.26.0
+	gopkg.in/ini.v1 v1.62.0 // indirect
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b
 	gotest.tools v2.2.0+incompatible
 	helm.sh/helm/v3 v3.6.2
