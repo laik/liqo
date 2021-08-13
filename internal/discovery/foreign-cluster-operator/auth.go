@@ -9,11 +9,14 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"strings"
 
+	corev1 "k8s.io/api/core/v1"
 	kerrors "k8s.io/apimachinery/pkg/api/errors"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/labels"
+	"k8s.io/apimachinery/pkg/selection"
+	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
 	"k8s.io/klog/v2"
+	"sigs.k8s.io/controller-runtime/pkg/client"
 
 	discoveryv1alpha1 "github.com/liqotech/liqo/apis/discovery/v1alpha1"
 	"github.com/liqotech/liqo/pkg/auth"
@@ -74,18 +77,17 @@ func (r *ForeignClusterReconciler) fetchRemoteTenantNamespace(ctx context.Contex
 	return nil
 }
 
-// getAuthToken loads the auth token form a labeled secret.
+// getAuthToken loads the auth token from a labeled secret.
 func (r *ForeignClusterReconciler) getAuthToken(fc *discoveryv1alpha1.ForeignCluster) string {
-	tokenSecrets, err := r.crdClient.Client().CoreV1().Secrets(r.Namespace).List(context.TODO(), metav1.ListOptions{
-		LabelSelector: strings.Join(
-			[]string{
-				strings.Join([]string{discovery.ClusterIDLabel, fc.Spec.ClusterIdentity.ClusterID}, "="),
-				discovery.AuthTokenLabel,
-			},
-			",",
-		),
-	})
-	if err != nil {
+	req1, err := labels.NewRequirement(discovery.ClusterIDLabel, selection.Equals, []string{fc.Spec.ClusterIdentity.ClusterID})
+	utilruntime.Must(err)
+	req2, err := labels.NewRequirement(discovery.AuthTokenLabel, selection.Exists, []string{})
+	utilruntime.Must(err)
+
+	var tokenSecrets corev1.SecretList
+	if err := r.LiqoNamespacedClient.List(context.TODO(), &tokenSecrets, client.MatchingLabelsSelector{
+		Selector: labels.NewSelector().Add(*req1, *req2),
+	}); err != nil {
 		klog.Error(err)
 		return ""
 	}
